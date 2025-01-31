@@ -462,7 +462,7 @@
 							</form>
 							<form class="filter-choice select-form">
 								<span class="title">Sort by</span>
-								<select title="sort-by" data-placeholder="Price: Low to High" class="chosen-select">
+								<select id="sort-by" title="sort-by" data-placeholder="Price: Low to High" class="chosen-select">
 									<option value="1">Price: Low to High</option>
 									<option value="2">Sort by popularity</option>
 									<option value="3">Sort by average rating</option>
@@ -486,7 +486,10 @@
 							</div>
 						</div>
 						<ul class="row list-products auto-clear equal-container product-grid">
-							<li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
+							<li class="product-item  col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1"
+							data-price="45"  
+    						data-rating="3"  
+    						data-new="true">
 								<div class="product-inner equal-element">
 									<div class="product-top">
 										<div class="flash">
@@ -541,7 +544,10 @@
 									</div>
 								</div>
 							</li>
-							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
+							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1"
+							data-price="55"  
+    						data-rating="2"  
+    						data-new="true">
 								<div class="product-inner equal-element">
 									<div class="product-top">
 									</div>
@@ -574,7 +580,7 @@
 													<span class="star-3"></span>
 												</div>
 												<div class="count-star">
-													(3)
+													(2)
 												</div>
 											</div>
 											<div class="price">
@@ -582,14 +588,17 @@
 													$65
 												</del>
 												<ins>
-													$45
+													$55
 												</ins>
 											</div>
 										</div>
 									</div>
 								</div>
 							</li>
-							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
+							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1"
+							data-price="40"  
+    						data-rating="3"  
+    						data-new="true">
 								<div class="product-inner equal-element">
 									<div class="product-top">
 										<div class="flash">
@@ -637,14 +646,17 @@
 													$65
 												</del>
 												<ins>
-													$45
+													$40
 												</ins>
 											</div>
 										</div>
 									</div>
 								</div>
 							</li>
-							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1">
+							<li class="product-item product-type-variable col-lg-3 col-md-4 col-sm-6 col-xs-6 col-ts-12 style-1"
+							data-price="45"  
+    						data-rating="3"  
+    						data-new="true">
 								<div class="product-inner equal-element">
 									<div class="product-top">
 									</div>
@@ -1457,5 +1469,49 @@
 	<script src="assets/js/owl.thumbs.min.js"></script>
 	<script src="assets/js/jquery.scrollbar.min.js"></script>
 	<script src="assets/js/frontend-plugin.js"></script>
+	<script>
+
+	document.addEventListener("DOMContentLoaded", function () {
+    const sortBySelect = document.querySelector("select[title='sort-by']");
+    const productList = document.querySelector(".list-products");
+    
+    function getProductData(product) {
+        return {
+            element: product,
+            price: parseFloat(product.querySelector(".price ins").textContent.replace("$", "")),
+            rating: parseInt(product.querySelector(".count-star").textContent.replace("(", "").replace(")", "")),
+            isNew: product.querySelector(".flash .onnew") ? 1 : 0
+        };
+    }
+    
+    function sortProducts(criteria) {
+        let products = [...productList.children].map(getProductData);
+        
+        switch (criteria) {
+            case "1": // Price: Low to High
+            case "5": // Sort by price: Low to High
+                products.sort((a, b) => a.price - b.price);
+                break;
+            case "2": // Sort by popularity
+                products.sort((a, b) => b.rating - a.rating);
+                break;
+            case "3": // Sort by average rating
+                products.sort((a, b) => b.rating - a.rating);
+                break;
+            case "4": // Sort by newness
+                products.sort((a, b) => b.isNew - a.isNew);
+                break;
+        }
+        
+        productList.innerHTML = "";
+        products.forEach(product => productList.appendChild(product.element));
+    }
+    
+    sortBySelect.addEventListener("change", function () {
+        sortProducts(this.value);
+    });
+});
+
+	</script>
 </body>
 </html>
